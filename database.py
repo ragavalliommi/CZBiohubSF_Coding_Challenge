@@ -7,10 +7,10 @@ connection = sqlite3.connect('fibonacci.db')
 c = connection.cursor()
 
 # Create a table
-c.execute("""CREATE TABLE fibonacciNumbers (
-        number integer,
-        sequence text
-    )""")
+c.execute("""CREATE TABLE IF NOT EXISTS fibonacciNumbers (
+                    number INTEGER PRIMARY KEY,
+                    sequence TEXT
+        )""")
 
 # Commit command
 connection.commit()
