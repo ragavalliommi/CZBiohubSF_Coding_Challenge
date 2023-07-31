@@ -9,34 +9,40 @@ app = Flask(__name__)
 @app.route('/home', methods = ['GET'])
 def home():
     n = int(request.args.get('n'))
-    sequence = ""
-    
-    if check_n_in_db(n):
-        #sequence = get_fibonacci_from_db(n)
-        sequence = "It is there in DB"
+    sequence = []
+    sequenceTuple = get_fibonacci_from_db(n)
+
+    if sequenceTuple is not None:
+        sequence = list(map(int, sequenceTuple[0].split(', ')))
     else:
-        # sequence = compute_fibonacci(n)
-        # save_fibonacci_to_db(n, sequence)
-        sequence = "It is not there in DB"
-    
+        sequence = compute_fibonacci(n)
+        save_fibonacci_to_db(n, sequence)
+
     return sequence
 
-
-def check_n_in_db(n):
+def get_fibonacci_from_db(n):
     connection = sqlite3.connect(db_path)
     c = connection.cursor()
-    c.execute("SELECT * FROM fibonacciNumbers WHERE number = ?",(n,))
+    c.execute("SELECT sequence FROM fibonacciNumbers WHERE number = ?", (n,))
     result = c.fetchone()
     connection.close()
-    return result is not None
-
-def get_fibonacci_from_db(n):
-    return
+    return result
 
 def compute_fibonacci(n):
-    return
+    result = [0, 1]
+    for i in range(2, n):
+        result.append(result[i-1] + result[i-2])
+    return result
 
 def save_fibonacci_to_db(n, sequence):
+    connection = sqlite3.connect(db_path)
+    c = connection.cursor()
+    sequenceText = ', '.join(map(str,sequence))
+    c.execute("""INSERT INTO fibonacciNumbers (number, sequence)
+                VALUES (?, ?) 
+    """, (n, sequenceText))
+    connection.commit()
+    connection.close()
     return
 
 if __name__ == "__main__":
