@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Fibonacci Numbers</title>
+</head>
+<body>
+    <h1>Fibonacci Numbers</h1>
+    <p>First <span id="nValue"></span> Fibonacci numbers:</p>
+    <p id="fibonacciList"></p>
+
+    <script>
+        // Get the value of 'n' from the URL query string
+        function getQueryVariable(variable) {
+            const query = window.location.search.substring(1);
+            const vars = query.split('&');
+            for (let i = 0; i < vars.length; i++) {
+                const pair = vars[i].split('=');
+                if (decodeURIComponent(pair[0]) === variable) {
+                    return parseInt(decodeURIComponent(pair[1]));
+                }
+            }
+            return null;
+        }
+
+        const n = getQueryVariable('n');
+
+        if (!isNaN(n) && n >= 1) {
+            
+            // Fetch Fibonacci series from the backend API with the query string 'n'
+            fetch(`http://127.0.0.1:5000/home?n=${n}`)
+                .then(response => response.json())
+                .then(fibonacciData => {
+                    // Assuming the backend returns the Fibonacci numbers as a Python list in JSON format
+                    if (Array.isArray(fibonacciData)) {
+                        const fibonacciList = document.getElementById('fibonacciList');
+                        fibonacciList.textContent = fibonacciData.join(', ');
+                        document.getElementById('nValue').textContent = n;
+                    } else {
+                        document.getElementById('fibonacciList').textContent = "Error fetching data from the server.";
+                    }
+                })
+                .catch(error => {
+                    document.getElementById('fibonacciList').textContent = "Error: " + error.message;
+                });
+        } else {
+            document.getElementById('fibonacciList').textContent = "Invalid input! Please go back and enter a valid positive integer.";
+        }
+    </script>
+</body>
+</html>
