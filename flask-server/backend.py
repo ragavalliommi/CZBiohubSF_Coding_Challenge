@@ -1,10 +1,13 @@
 from flask import Flask, request
+from flask_cors import CORS
+
 import sqlite3
-import os
+import os, json
 
 db_path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'fibonacci.db')
 print(db_path)
 app = Flask(__name__)
+CORS(app)
 
 @app.route('/home', methods = ['GET'])
 def home():
@@ -18,7 +21,7 @@ def home():
         sequence = compute_fibonacci(n)
         save_fibonacci_to_db(n, sequence)
 
-    return sequence
+    return json.dumps(sequence)
 
 def get_fibonacci_from_db(n):
     connection = sqlite3.connect(db_path)
