@@ -5,6 +5,8 @@
 
 #Needed
 *.db
+flask-server/db_path
+flask-server/venv/
 
 # User-specific files
 *.rsuser
