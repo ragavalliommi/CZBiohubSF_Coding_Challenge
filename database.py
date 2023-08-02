@@ -17,14 +17,14 @@ table_exists = c.fetchone()
 
 # Create table and insert starter row if table does not exist
 if not table_exists:
+        
         # Create a table
         c.execute("""CREATE TABLE fibonacciNumbers (
                     number INTEGER PRIMARY KEY,
                     sequence TEXT
         )""")
 
-        # Insert first 2 numbers (1 and 2) and their respective sequences of Fibonacci
-
+        # Insert first 2 numbers (1 and 2) and their respective Fibonacci sequences
         starterRows = [(1, "0"),
                        (2, "0, 1")]
 
